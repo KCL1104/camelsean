@@ -1,0 +1,7 @@
+langchain
+langchain-openai
+openai
+python-dotenv
+requests
+tweepy
+coinbase # Add if used
