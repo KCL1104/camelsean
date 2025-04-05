@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useLocation } from "wouter";
 
 interface LoginForm {
   email: string;
@@ -9,6 +10,7 @@ interface LoginForm {
 export default function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>();
   const [message, setMessage] = useState<string | null>(null);
+  const [, navigate] = useLocation();
 
   const onSubmit = async (data: LoginForm) => {
     try {
@@ -21,6 +23,7 @@ export default function Login() {
       const result = await res.json();
       setMessage("Login successful!");
       // Save token or handle login state here
+      navigate("/dashboard");
     } catch (err: any) {
       setMessage(err.message || "Login failed");
     }
