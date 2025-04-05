@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 
 interface LoginForm {
@@ -48,12 +49,13 @@ export default function Login() {
       {message && <p className="mt-4 text-center">{message}</p>}
       <div className="mt-4 text-center">
         <p>Don't have an account?</p>
-        <button
+        <Button
+          variant="outline"
+          className="mt-4 w-full"
           onClick={() => navigate("/signup")}
-          className="mt-2 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded"
         >
           Sign Up
-        </button>
+        </Button>
       </div>
     </div>
   );
