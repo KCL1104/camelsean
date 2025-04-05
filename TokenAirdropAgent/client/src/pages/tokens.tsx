@@ -29,7 +29,12 @@ export default function Tokens() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const { data: tokens, isLoading, error } = useQuery<Token[]>({
-    queryKey: ["/api/tokens"],
+    queryKey: ["tokens"],
+    queryFn: async () => {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/tokens`);
+      if (!res.ok) throw new Error("Failed to fetch tokens");
+      return res.json();
+    },
   });
 
   const form = useForm<CreateTokenFormValues>({
@@ -37,7 +42,7 @@ export default function Tokens() {
     defaultValues: {
       name: "",
       symbol: "",
-      totalSupply: "1000000",
+      totalSupply: 1000000,
     },
   });
 
@@ -117,7 +122,7 @@ export default function Tokens() {
                     <span className="text-xl font-bold text-primary-600">{token.symbol}</span>
                   </div>
                   <CardDescription>
-                    Created {new Date(token.createdAt).toLocaleDateString()}
+                    Created {token.createdAt ? new Date(token.createdAt).toLocaleDateString() : "Unknown"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -129,7 +134,7 @@ export default function Tokens() {
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-medium text-gray-500">Contract:</span>
                       <div className="flex items-center">
-                        <span className="text-sm text-gray-900 font-mono">{truncateAddress(token.contractAddress)}</span>
+                        <span className="text-sm text-gray-900 font-mono">{truncateAddress(token.contractAddress ?? undefined)}</span>
                         {token.contractAddress && (
                           <a 
                             href={`https://basescan.org/address/${token.contractAddress}`}

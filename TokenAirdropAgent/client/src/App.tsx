@@ -10,6 +10,8 @@ import Users from "@/pages/users";
 import Settings from "@/pages/settings";
 import Sidebar from "@/components/layout/sidebar-new";
 import Header from "@/components/layout/header";
+import Login from "./pages/login";
+import SignUp from "./pages/signup";
 import { useState } from "react";
 import { AirdropProvider } from "@/context/airdrop-context";
 
@@ -66,6 +68,12 @@ function Router() {
             <Settings />
           </AppLayout>
         )}
+      </Route>
+      <Route path="/login">
+        {() => <Login />}
+      </Route>
+      <Route path="/signup">
+        {() => <SignUp />}
       </Route>
       <Route component={NotFound} />
     </Switch>
