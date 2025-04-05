@@ -35,11 +35,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/">
-        {() => (
-          <AppLayout>
-            <Dashboard />
-          </AppLayout>
-        )}
+        {() => <Login />}
       </Route>
       <Route path="/airdrops">
         {() => (
