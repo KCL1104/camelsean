@@ -44,7 +44,7 @@ export default function Login() {
           <input type="password" {...register("password", { required: true })} className="w-full border p-2 rounded" />
           {errors.password && <p className="text-red-500">Password is required</p>}
         </div>
-        <button type="submit" className="w-full bg-primary-600 text-white p-2 rounded">Login</button>
+        <Button type="submit" className="w-full">Login</Button>
       </form>
       {message && <p className="mt-4 text-center">{message}</p>}
       <div className="mt-4 text-center">
