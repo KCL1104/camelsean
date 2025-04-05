@@ -17,9 +17,7 @@ import { apiRequest } from "@/lib/queryClient";
 const createTokenSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   symbol: z.string().min(1, "Symbol is required").max(10, "Symbol cannot exceed 10 characters"),
-  totalSupply: z.string().refine(val => !isNaN(Number(val)) && Number(val) > 0, {
-    message: "Total supply must be a positive number",
-  }).transform(val => Number(val)),
+  merchantAddress: z.string().length(42, "Merchant address must be 42 characters"),
 });
 
 type CreateTokenFormValues = z.infer<typeof createTokenSchema>;
@@ -42,7 +40,7 @@ export default function Tokens() {
     defaultValues: {
       name: "",
       symbol: "",
-      totalSupply: 1000000,
+      merchantAddress: "",
     },
   });
 
@@ -67,7 +65,7 @@ export default function Tokens() {
         body: JSON.stringify({
           name: data.name,
           symbol: data.symbol,
-          merchantAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          merchantAddress: data.merchantAddress,
           canDistribute: true,
           canLP: true,
         }),
@@ -215,9 +213,9 @@ export default function Tokens() {
                 <Label htmlFor="name" className="text-right">
                   Name
                 </Label>
-                <Input 
-                  id="name" 
-                  className="col-span-3" 
+                <Input
+                  id="name"
+                  className="col-span-3"
                   placeholder="My Token"
                   {...form.register("name")}
                 />
@@ -231,9 +229,9 @@ export default function Tokens() {
                 <Label htmlFor="symbol" className="text-right">
                   Symbol
                 </Label>
-                <Input 
-                  id="symbol" 
-                  className="col-span-3" 
+                <Input
+                  id="symbol"
+                  className="col-span-3"
                   placeholder="TKN"
                   {...form.register("symbol")}
                 />
@@ -244,20 +242,18 @@ export default function Tokens() {
                 )}
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="totalSupply" className="text-right">
-                  Total Supply
+                <Label htmlFor="merchantAddress" className="text-right">
+                  Merchant Address
                 </Label>
-                <Input 
-                  id="totalSupply" 
-                  className="col-span-3" 
-                  type="number"
-                  min="1"
-                  step="1"
-                  {...form.register("totalSupply")}
+                <Input
+                  id="merchantAddress"
+                  className="col-span-3"
+                  placeholder="0x..."
+                  {...form.register("merchantAddress")}
                 />
-                {form.formState.errors.totalSupply && (
+                {form.formState.errors.merchantAddress && (
                   <p className="text-red-500 text-xs col-start-2 col-span-3">
-                    {form.formState.errors.totalSupply.message}
+                    {form.formState.errors.merchantAddress.message}
                   </p>
                 )}
               </div>
