@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface SignUpForm {
   email: string;
@@ -48,7 +49,7 @@ export default function SignUp() {
           <input type="password" {...register("confirmPassword", { required: true })} className="w-full border p-2 rounded" />
           {errors.confirmPassword && <p className="text-red-500">Please confirm your password</p>}
         </div>
-        <button type="submit" className="w-full bg-primary-600 text-white p-2 rounded">Sign Up</button>
+        <Button type="submit" className="w-full">Sign Up</Button>
       </form>
       {message && <p className="mt-4 text-center">{message}</p>}
     </div>
