@@ -34,6 +34,13 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 function Router() {
   return (
     <Switch>
+      <Route path="/dashboard">
+        {() => (
+          <AppLayout>
+            <Dashboard />
+          </AppLayout>
+        )}
+      </Route>
       <Route path="/">
         {() => <Login />}
       </Route>

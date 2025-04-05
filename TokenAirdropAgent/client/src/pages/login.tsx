@@ -21,9 +21,6 @@ export default function Login() {
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error("Login failed");
-      const result = await res.json();
-      setMessage("Login successful!");
-      // Save token or handle login state here
       navigate("/dashboard");
     } catch (err: any) {
       setMessage(err.message || "Login failed");
