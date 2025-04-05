@@ -12,6 +12,12 @@ import {
   insertAirdropSchema, 
   insertActivitySchema 
 } from "@shared/schema";
+interface DistributionResult {
+  success: boolean;
+  transactionHash: string;
+  error?: string;
+}
+
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
@@ -310,13 +316,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Distribute tokens using Metal API if token has metalTokenId
-      let distributionResult = { success: true, transactionHash: "simulated-tx-hash" };
+      let distributionResult: DistributionResult = { success: true, transactionHash: "simulated-tx-hash" };
       if (token.metalTokenId) {
-        distributionResult = await metalApiService.distributeTokens(
+        const distribution = await metalApiService.distributeTokens(
           token.metalTokenId,
           interactionData.userAddress,
           airdrop.tokenAmount
         );
+        distributionResult = {
+          success: distribution.success,
+          transactionHash: distribution.transactionHash ?? "",
+          error: distribution.error ?? "",
+        };
       }
       
       if (!distributionResult.success) {
@@ -453,13 +464,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Distribute tokens using Metal API if token has metalTokenId
-      let distributionResult = { success: true, transactionHash: "simulated-tx-hash" };
+      let distributionResult: DistributionResult = { success: true, transactionHash: "simulated-tx-hash" };
       if (token.metalTokenId) {
-        distributionResult = await metalApiService.distributeTokens(
+        const distribution = await metalApiService.distributeTokens(
           token.metalTokenId,
           user.walletAddress,
           airdrop.tokenAmount
         );
+        distributionResult = {
+          success: distribution.success,
+          transactionHash: distribution.transactionHash ?? "",
+          error: distribution.error ?? "",
+        };
       }
       
       if (!distributionResult.success) {
