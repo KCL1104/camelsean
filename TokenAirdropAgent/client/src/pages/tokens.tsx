@@ -25,6 +25,7 @@ type CreateTokenFormValues = z.infer<typeof createTokenSchema>;
 export default function Tokens() {
   const { toast } = useToast();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreatingToken, setIsCreatingToken] = useState(false);
 
   const { data: tokens, isLoading, error } = useQuery<Token[]>({
     queryKey: ["tokens"],
@@ -55,6 +56,7 @@ export default function Tokens() {
   }, [error, toast]);
 
   const onSubmit = async (data: CreateTokenFormValues) => {
+    setIsCreatingToken(true);
     try {
       const response = await fetch('https://api.metal.build/merchant/create-token', {
         method: 'POST',
@@ -78,24 +80,39 @@ export default function Tokens() {
       const jobId = createResponse.jobId;
       if (!jobId) throw new Error("No jobId returned from create-token API");
 
-      const statusUrl = `https://api.metal.build/merchant/create-token/status/${jobId}`;
-      const statusResponse = await fetch(statusUrl, {
-        headers: {
-          'x-api-key': import.meta.env.VITE_METAL_API_KEY as string,
-        },
-      });
+      let statusData;
+      const maxAttempts = 20;
+      const delayMs = 500;
+      let attempts = 0;
 
-      if (!statusResponse.ok) throw new Error("Failed to fetch token creation status");
+      while (attempts < maxAttempts) {
+        const statusUrl = `https://api.metal.build/merchant/create-token/status/${jobId}`;
+        const statusResponse = await fetch(statusUrl, {
+          headers: {
+            'x-api-key': import.meta.env.VITE_METAL_API_KEY as string,
+          },
+        });
 
-      const statusData = await statusResponse.json();
+        if (!statusResponse.ok) throw new Error("Failed to fetch token creation status");
 
-      if (statusData.status !== "success") {
-        throw new Error(`Token creation failed or is still pending: ${statusData.status}`);
+        statusData = await statusResponse.json();
+
+        if (statusData.status === "success") {
+          break;
+        } else if (statusData.status === "failed") {
+          throw new Error("Token creation failed");
+        }
+
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        attempts++;
+      }
+
+      if (!statusData || statusData.status !== "success") {
+        throw new Error("Token creation did not complete in time");
       }
 
       const tokenData = statusData.data;
 
-      // Optionally, store tokenData somewhere persistent or update UI state
       console.log("Created token data:", tokenData);
 
       toast({
@@ -103,7 +120,14 @@ export default function Tokens() {
         description: `${tokenData.name} (${tokenData.symbol}) has been created successfully`,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["tokens"] });
+      // Optimistically update tokens list in cache
+      queryClient.setQueryData<Token[] | undefined>(["tokens"], (oldTokens) => {
+        if (!oldTokens) {
+          return [tokenData];
+        }
+        return [...oldTokens, tokenData];
+      });
+
       setIsCreateModalOpen(false);
       form.reset();
     } catch (error) {
@@ -112,6 +136,8 @@ export default function Tokens() {
         description: error instanceof Error ? error.message : "Unknown error occurred",
         variant: "destructive",
       });
+    } finally {
+      setIsCreatingToken(false);
     }
   };
 
@@ -289,11 +315,21 @@ export default function Tokens() {
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
-                disabled={form.formState.isSubmitting}
+              <Button
+                type="submit"
+                disabled={form.formState.isSubmitting || isCreatingToken}
               >
-                {form.formState.isSubmitting ? "Creating..." : "Create Token"}
+                {isCreatingToken ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                    Creating...
+                  </span>
+                ) : (
+                  "Create Token"
+                )}
               </Button>
             </DialogFooter>
           </form>
