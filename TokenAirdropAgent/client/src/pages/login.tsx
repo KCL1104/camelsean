@@ -21,7 +21,16 @@ export default function Login() {
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error("Login failed");
-      navigate("/dashboard");
+      const result = await res.json();
+      if (result.success) {
+        // Store dummy login state
+        localStorage.setItem("isLoggedIn", "true");
+        // Optionally store a dummy token
+        localStorage.setItem("token", "dummy-token");
+        navigate("/dashboard");
+      } else {
+        throw new Error(result.message || "Login failed");
+      }
     } catch (err: any) {
       setMessage(err.message || "Login failed");
     }
