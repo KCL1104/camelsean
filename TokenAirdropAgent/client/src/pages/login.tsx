@@ -46,6 +46,15 @@ export default function Login() {
         <button type="submit" className="w-full bg-primary-600 text-white p-2 rounded">Login</button>
       </form>
       {message && <p className="mt-4 text-center">{message}</p>}
+      <div className="mt-4 text-center">
+        <p>Don't have an account?</p>
+        <button
+          onClick={() => navigate("/signup")}
+          className="mt-2 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded"
+        >
+          Sign Up
+        </button>
+      </div>
     </div>
   );
 }
