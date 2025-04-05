@@ -73,11 +73,34 @@ export default function Tokens() {
 
       if (!response.ok) throw new Error("Failed to create token on Metal");
 
-      const token = await response.json();
+      const createResponse = await response.json();
+
+      const jobId = createResponse.jobId;
+      if (!jobId) throw new Error("No jobId returned from create-token API");
+
+      const statusUrl = `https://api.metal.build/merchant/create-token/status/${jobId}`;
+      const statusResponse = await fetch(statusUrl, {
+        headers: {
+          'x-api-key': import.meta.env.VITE_METAL_API_KEY as string,
+        },
+      });
+
+      if (!statusResponse.ok) throw new Error("Failed to fetch token creation status");
+
+      const statusData = await statusResponse.json();
+
+      if (statusData.status !== "success") {
+        throw new Error(`Token creation failed or is still pending: ${statusData.status}`);
+      }
+
+      const tokenData = statusData.data;
+
+      // Optionally, store tokenData somewhere persistent or update UI state
+      console.log("Created token data:", tokenData);
 
       toast({
         title: "Token created",
-        description: `${data.name} (${data.symbol}) has been created successfully`,
+        description: `${tokenData.name} (${tokenData.symbol}) has been created successfully`,
       });
 
       queryClient.invalidateQueries({ queryKey: ["tokens"] });

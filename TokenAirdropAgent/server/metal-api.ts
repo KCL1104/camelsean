@@ -50,13 +50,37 @@ export class MetalApiService {
           totalSupply: tokenData.totalSupply
         })
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`Metal API Error: ${errorData.message || response.statusText}`);
       }
+  
+      const createResponse = await response.json();
+      const jobId = createResponse.jobId;
+      if (!jobId) {
+        throw new Error("No jobId returned from Metal API");
+      }
 
-      return await response.json();
+      const statusUrl = `${this.baseUrl}/merchant/create-token/status/${jobId}`;
+      const statusResponse = await fetch(statusUrl, {
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`
+        }
+      });
+
+      if (!statusResponse.ok) {
+        const errorData = await statusResponse.json();
+        throw new Error(`Metal API Status Error: ${errorData.message || statusResponse.statusText}`);
+      }
+
+      const statusData = await statusResponse.json();
+
+      if (statusData.status !== "success") {
+        throw new Error(`Token creation failed or is still pending: ${statusData.status}`);
+      }
+
+      return statusData.data;
     } catch (error) {
       console.error("Error creating token with Metal API:", error);
       throw error;
