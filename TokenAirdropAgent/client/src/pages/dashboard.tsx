@@ -16,7 +16,12 @@ export default function Dashboard() {
   const { isCreateAirdropModalOpen, setIsCreateAirdropModalOpen } = useAirdropContext();
 
   const { data: stats, isLoading, error } = useQuery<DashboardStats>({
-    queryKey: ["/api/dashboard/stats"],
+    queryKey: ["dashboard-stats"],
+    queryFn: async () => {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard/stats`);
+      if (!res.ok) throw new Error("Failed to fetch dashboard stats");
+      return res.json();
+    },
   });
 
   useEffect(() => {
