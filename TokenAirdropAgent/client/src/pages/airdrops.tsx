@@ -69,7 +69,7 @@ export default function Airdrops() {
                     </Badge>
                   </div>
                   <CardDescription>
-                    Created {new Date(airdrop.createdAt).toLocaleDateString()}
+                    Created {airdrop.createdAt ? new Date(airdrop.createdAt).toLocaleDateString() : "Unknown"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

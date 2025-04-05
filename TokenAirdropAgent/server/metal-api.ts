@@ -5,7 +5,6 @@
  */
 
 import { Token, InsertToken } from "@shared/schema";
-import { get } from "@vercel/edge-config";
 
 interface MetalTokenResponse {
   id: string;
@@ -84,17 +83,7 @@ export class MetalApiService {
         const statusData = await statusResponse.json();
 
         if (statusData.status === "success") {
-          const tokenData = statusData.data;
-    
-          // Store token data in Vercel Edge Config
-          try {
-            const existingTokens = await get("tokens") as any[] || [];
-            console.warn("Edge Config is read-only at runtime. To store tokens, update Edge Config via the Vercel Dashboard or REST API.");
-          } catch (storeError) {
-            console.error("Failed to store token data in Edge Config:", storeError);
-          }
-    
-          return tokenData;
+          return statusData.data;
         } else if (statusData.status === "failed") {
           throw new Error("Token creation failed");
         }
