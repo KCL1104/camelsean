@@ -87,7 +87,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
                   <path d="M15 9l-6 6M9 9l6 6" stroke="white" strokeWidth="2" strokeLinecap="round"></path>
                 </svg>
-                <span className="ml-2 text-xl font-semibold text-gray-900">Metal</span>
+                <span className="ml-2 text-xl font-semibold text-gray-900">CamelSean</span>
               </div>
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2 space-y-1">
@@ -153,7 +153,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
               <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
               <path d="M15 9l-6 6M9 9l6 6" stroke="white" strokeWidth="2" strokeLinecap="round"></path>
             </svg>
-            <span className="ml-2 text-xl font-semibold text-gray-900">Metal</span>
+            <span className="ml-2 text-xl font-semibold text-gray-900">CamelSean</span>
           </div>
           <div className="flex-1 flex flex-col overflow-y-auto pt-5 pb-4">
             <nav className="flex-1 px-2 space-y-1">

@@ -58,14 +58,31 @@ export default function Tokens() {
 
   const onSubmit = async (data: CreateTokenFormValues) => {
     try {
-      await apiRequest("POST", "/api/tokens", data);
-      
+      const response = await fetch('https://api.metal.build/merchant/create-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': import.meta.env.VITE_METAL_API_KEY as string,
+        },
+        body: JSON.stringify({
+          name: data.name,
+          symbol: data.symbol,
+          merchantAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          canDistribute: true,
+          canLP: true,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to create token on Metal");
+
+      const token = await response.json();
+
       toast({
         title: "Token created",
         description: `${data.name} (${data.symbol}) has been created successfully`,
       });
-      
-      queryClient.invalidateQueries({ queryKey: ["/api/tokens"] });
+
+      queryClient.invalidateQueries({ queryKey: ["tokens"] });
       setIsCreateModalOpen(false);
       form.reset();
     } catch (error) {
