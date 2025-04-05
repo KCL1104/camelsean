@@ -1,7 +1,7 @@
 # agent/setup.py
 from langchain_openai import ChatOpenAI
 from langchain.agents import AgentExecutor, create_openai_tools_agent
-from config import OPENROUTER_API_KEY, YOUR_SITE_URL, YOUR_APP_NAME
+from agent.config import OPENROUTER_API_KEY, YOUR_SITE_URL, YOUR_APP_NAME
 from .prompts import get_agent_prompt
 
 def create_agent_executor(tools):

@@ -9,6 +9,8 @@ import ActivityTable from "@/components/dashboard/activity-table";
 import CreateAirdropModal from "@/components/dashboard/create-airdrop-modal";
 import { useAirdropContext } from "@/context/airdrop-context";
 
+import TrackContracts from "../TrackContracts";
+
 export default function Dashboard() {
   const { toast } = useToast();
   const { isCreateAirdropModalOpen, setIsCreateAirdropModalOpen } = useAirdropContext();
@@ -36,8 +38,9 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="py-6">
+    <div className="py-6 space-y-6">
       {/* Page Header */}
+      <TrackContracts />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Airdrop Dashboard</h1>

@@ -17,6 +17,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
 
   // API Routes
+
+  app.get("/api/tracked-events", async (req: Request, res: Response) => {
+    try {
+      const response = await fetch("http://localhost:8000/get_events");
+      const data = await response.json();
+      res.json({ events: data.events || [] });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/track-contract", async (req: Request, res: Response) => {
+    try {
+      const { address } = req.body;
+      if (!address || typeof address !== "string" || !address.startsWith("0x") || address.length !== 42) {
+        return res.status(400).json({ error: "Invalid contract address" });
+      }
+
+      const response = await fetch("http://localhost:8000/add_contract", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contract_address: address }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return res.status(500).json({ error: data.detail || "Failed to add contract" });
+      }
+      return res.json({ message: data.message });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
   // -----------------------------------------------
 
   // User Routes

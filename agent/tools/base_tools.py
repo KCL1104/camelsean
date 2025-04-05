@@ -2,7 +2,7 @@
 import requests
 import json
 from langchain.tools import tool
-from config import BASESCAN_API_KEY # Import key from config
+from agent.config import BASESCAN_API_KEY  # Import key from config
 
 BASESCAN_API_URL = "https://api.basescan.org/api"
 

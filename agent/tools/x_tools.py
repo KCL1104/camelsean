@@ -1,7 +1,7 @@
 # tools/x_tools.py
 import json
 from langchain.tools import tool
-from config import x_client # Import the initialized client from config
+from agent.config import x_client  # Import the initialized client from config
 
 @tool
 def get_latest_tweets_from_user(username: str, count: int = 5) -> str:

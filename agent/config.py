@@ -25,3 +25,9 @@ if X_BEARER_TOKEN:
         print(f"Warning: Failed to init X client in config: {e}")
 
 cb_client = None # Initialize Coinbase client if using
+
+BASE_WSS_URL = os.getenv("BASE_WSS_URL")
+ABI_DIR = os.getenv("ABI_DIR", "abi/") # Default to 'abi/' subdirectory
+
+if not BASE_WSS_URL:
+    print("Warning: BASE_WSS_URL not found in .env. Background listener cannot run.")

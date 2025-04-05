@@ -1,1 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+dist/
+build/
+.eggs/
 .env
+.venv/
+venv/
+ENV/
+env/
+*.sqlite3
+*.db
+
+# Environment & secrets
+.env
+*.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Bytecode cache
+__pycache__/
+*.pyc
+
+# Misc
+*.bak
+*.swp
+*.tmp
+*.temp
+*.old
+*.orig
+
+# Recent events file
+recent_events.json
