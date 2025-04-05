@@ -63,24 +63,37 @@ export class MetalApiService {
       }
 
       const statusUrl = `${this.baseUrl}/merchant/create-token/status/${jobId}`;
-      const statusResponse = await fetch(statusUrl, {
-        headers: {
-          "Authorization": `Bearer ${this.apiKey}`
+
+      let attempts = 0;
+      const maxAttempts = 10;
+      const delayMs = 500;
+
+      while (attempts < maxAttempts) {
+        const statusResponse = await fetch(statusUrl, {
+          headers: {
+            "Authorization": `Bearer ${this.apiKey}`
+          }
+        });
+
+        if (!statusResponse.ok) {
+          const errorData = await statusResponse.json();
+          throw new Error(`Metal API Status Error: ${errorData.message || statusResponse.statusText}`);
         }
-      });
 
-      if (!statusResponse.ok) {
-        const errorData = await statusResponse.json();
-        throw new Error(`Metal API Status Error: ${errorData.message || statusResponse.statusText}`);
+        const statusData = await statusResponse.json();
+
+        if (statusData.status === "success") {
+          return statusData.data;
+        } else if (statusData.status === "failed") {
+          throw new Error("Token creation failed");
+        }
+
+        // Wait before next attempt
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        attempts++;
       }
 
-      const statusData = await statusResponse.json();
-
-      if (statusData.status !== "success") {
-        throw new Error(`Token creation failed or is still pending: ${statusData.status}`);
-      }
-
-      return statusData.data;
+      throw new Error("Token creation did not complete in time");
     } catch (error) {
       console.error("Error creating token with Metal API:", error);
       throw error;
