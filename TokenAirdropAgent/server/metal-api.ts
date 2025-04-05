@@ -65,7 +65,7 @@ export class MetalApiService {
       const statusUrl = `${this.baseUrl}/merchant/create-token/status/${jobId}`;
 
       let attempts = 0;
-      const maxAttempts = 10;
+      const maxAttempts = 60;
       const delayMs = 500;
 
       while (attempts < maxAttempts) {

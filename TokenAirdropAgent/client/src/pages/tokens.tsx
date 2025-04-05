@@ -81,7 +81,7 @@ export default function Tokens() {
       if (!jobId) throw new Error("No jobId returned from create-token API");
 
       let statusData;
-      const maxAttempts = 20;
+      const maxAttempts = 60;
       const delayMs = 500;
       let attempts = 0;
 
